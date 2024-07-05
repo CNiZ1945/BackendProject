@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>관리자 페이지</title>
+
+    <link rel="stylesheet" href="/static/css/admin_main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montaga&family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css" integrity="sha512-10/jx2EXwxxWqCLX/hHth/vu2KY3jCF70dCQB8TSgNjbCVAC/8vai53GfMDrO2Emgwccf2pJqxct9ehpzG+MTw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+<!--<div id="unauthorized-message" style="display: none;">-->
+<!--    <h1>접근 권한이 없습니다.</h1>-->
+<!--</div>-->
+<div class="body" style="display: none;">
+    <!-- 메뉴와 화면 정렬을 위한 div  -->
+    <div class="menu_div">
+        <!-- ========================== 관리자 메뉴 ================================= -->
+        <a href="/main">
+            <div>홈페이지로 돌아가기</div>
+        </a>
+        <a href="/admin/page">
+            <div>메인 화면</div>
+        </a>
+        <a href="admin_member_list.html">
+            <div>회원 관리</div>
+        </a>
+        <a href="admin_movie_list.html">
+            <div>영화 관리</div>
+        </a>
+        <a href="#">
+            <div>여기에 뭐 넣어요?</div>
+        </a>
+    </div>
+    <!-- ========================== 그래프 영역 ================================ -->
+    <div class="main">
+        <!-- ================ 상단 그래프 ================================= -->
+        <div class="graph01_div">
+            <div class="graph01_1">
+                <figure>
+                    <img src="/static/img/dune.jpg" alt="">
+                    <figcaption>그래프 1</figcaption>
+                </figure>
+            </div>
+            <div class="graph01_2">
+                <figure>
+                    <img src="/static/img/half-life-3-pc-game-cover.jpg" alt="">
+                    <figcaption>그래프 2</figcaption>
+                </figure>
+            </div>
+        </div>
+        <!-- ======================== 하단 그래프 ========================= -->
+        <div class="graph02_div">
+            <div class="graph02_01">
+                <figure>
+                    <img src="/static/img/harry.webp" alt="">
+                    <figcaption>그래프 3</figcaption>
+                </figure>
+            </div>
+            <div class="graph02_02">
+                <figure>
+                    <img src="/static/img/home.png" alt="">
+                    <figcaption>그래프 4</figcaption>
+                </figure>
+            </div>
+        </div>
+        <!-- ============================ 공지사항 영역 ========================== -->
+        <div class="admin_notice_div">
+            <!-- 공지사항 제목 -->
+            <div class="admin_notice_haed">
+                <h2>공지사항</h2>
+            </div>
+            <div class="notice_link">
+                <span><a href="notice.html">자세히 보러 가기 &gt;</a></span>
+            </div>
+
+            <div class="admin_notice_list_menu">
+                <ul class="admin_notice_list_ul">
+                    <li>번호</li>
+                    <li>제목</li>
+                    <li>날짜</li>
+                </ul>
+            </div>
+            <!-- 공지사항 리스트 -->
+            <div class="admin_notice_list">
+                <ul class="admin_notice_list_ul">
+                    <li>1</li>
+                    <li><a href="post_view.html">공지사항 1</a></li>
+                    <li>2024.06.26</li>
+                </ul>
+                <ul class="admin_notice_list_ul">
+                    <li>2</li>
+                    <li><a href="post_view.html">공지사항 2</a></li>
+                    <li>2024.06.26</li>
+                </ul>
+                <ul class="admin_notice_list_ul">
+                    <li>3</li>
+                    <li><a href="post_view.html">공지사항 3</a></li>
+                    <li>2024.06.26</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const token = localStorage.getItem('accessToken'); // Assuming the token is stored in localStorage
+
+        if (token) {
+            axios.get('/auth/memberinfo', {
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+            })
+                .then(response => {
+                    const role = response.data.memRole;
+                    if (role !== 'ADMIN') {
+                        alert("권한이 없습니다.");
+                        window.location.href = '/main';
+
+                    } else {
+                        document.querySelector('.body').style.display = 'block';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching user info:', error);
+                    alert("오류가 발생했습니다. 다시 로그인해주세요.");
+                    window.location.href = '/login';
+                });
+        } else {
+            alert("로그인이 필요합니다.");
+            window.location.href = '/login';
+        }
+    });
+</script>
+
+</body>
+
+</html>

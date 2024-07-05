@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>박플레이어 로그인 페이지</title>
+    <link rel="stylesheet" href="../static/css/login.css" type="text/css">
+</head>
+
+<body>
+<!-- 헤더 -->
+<header>
+    <div class="logo">
+        <a href="main.html"><img src="../static/img/google_login.png" alt=""></a>
+    </div>
+</header>
+
+<div class="login-container">
+    <div id="login-header">
+        <h2>로그인</h2>
+    </div>
+    <!-- 구글로 시작하기 버튼 -->
+
+    <form id="login-form">
+        <div class="box">
+            <div class="box2">
+                <label for="username">아이디:</label>
+            </div>
+            <div class="box3">
+                <input type="text" id="username" name="username" required>
+            </div>
+        </div>
+        <div class="box">
+            <div class="box2">
+                <label for="password">비밀번호:</label>
+            </div>
+            <div class="box3">
+                <input type="password" id="password" name="password" required>
+            </div>
+        </div>
+        <div class="box4">
+            <!-- 로그인 버튼 -->
+            <input type="submit" class="submit" value="로그인">
+            <!-- 자바 or 서브및으로할지 추루 결정 -->
+        </div>
+    </form>
+    <div class="google_login">
+        <a href="#"><img src="../static/img/google_login.png" alt="구글로그인버튼"></a>
+    </div>
+    <div class="signup">
+        <div class="signup2">
+            <a href="signup.html">회원가입</a>
+        </div>
+        <div class="signup3">
+            <a href="findidpw.html">아이디/비밀번호 찾기</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('login-form').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        const response = await fetch('/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                memId: username,
+                memPassword: password
+            })
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            localStorage.setItem('accessToken', data.accessToken);
+            localStorage.setItem('loginMethod', 'custom'); // 로그인 방법 저장
+            window.location.href = '/main'; // 로그인 성공 후 메인 페이지로 이동
+        } else {
+            alert('로그인 실패');
+        }
+    });
+</script>
+
+<!-- 푸터 -->
+<footer></footer>
+</body>
+
+</html>

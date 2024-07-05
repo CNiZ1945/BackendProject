@@ -1,0 +1,31 @@
+package com.movie.rock.movie.data;
+
+import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Getter
+@NoArgsConstructor
+@Table(name = "movie_films")
+public class MovieFilmEntity {
+
+    @Id
+    @Column(name = "film_id")
+    private int filmId;
+
+    @Column(name = "movie_film")
+    private String movieFilm;
+
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "movie_id", referencedColumnName = "movie_id")
+    private MovieEntity movie;
+
+    @Builder
+    public MovieFilmEntity(int filmId, String movieFilm, MovieEntity movie) {
+        this.filmId = filmId;
+        this.movieFilm = movieFilm;
+        this.movie = movie;
+    }
+}

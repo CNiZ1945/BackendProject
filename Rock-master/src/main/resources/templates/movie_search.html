@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>검색 결과</title>
+    <link rel="stylesheet" href="../static/css/movie_search.css">
+</head>
+<body>
+    <header>
+        <!-- 헤더 오른쪽 -->
+        <div class="header_right">
+            <div class="logo_img">
+                <!-- 로고 이미지 -->
+                <a href="#"><img src="http://placehold.it/70X70" alt=""></a>
+            </div>
+        </div>
+        <!-- 검색창 -->
+        <div class="search">
+            <form action="">
+                <input type="text" name="" id="" class="search_input" placeholder="오늘은 무슨 영화를 볼까?">
+                <button class="search_btn" type="submit">
+                    <i class="fa-solid fa-magnifying-glass-arrow-right fa-3x " ></i>
+                </button>
+            </form>
+        </div>
+        <!-- 헤더 왼쪽 -->
+        <div class="header_left">
+    
+            <div class="profile">
+                <!-- 동그라미 프로필 공간 -->
+                <a href="admin_Main.html"> 임시 <br>관리자 페이지</a>
+            </div>
+            <div class="profile_menu">
+                <ul>
+                    <a href="mypage.html"><li>마이페이지</li></a>
+                    <a href="notice.html"><li>공지사항</li></a>
+                    <a href="login.html"><li>로그인</li></a>
+                </ul>
+            </div>
+                <!-- 추후에 로그인후에 로그아웃으로 바뀌도록 작성 -->
+        </div> 
+    </header>
+    <!-- 검색 결과 창 -->
+    <div class="search_result">
+        <span>&#123;반지의 제왕&#125; 검색 결과</span>
+    </div>
+    <!-- 검색 결과 영화 -->
+    <div class="result_movie">
+        <a href="movie_page.html">
+            <figure class="movie_figure">
+                <img src="../static/img/dune.jpg" alt="">
+                <figcaption>&#123;반지의 제왕&#125;</figcaption>
+            </figure>
+        </a>
+        <a href="movie_page.html">
+            <figure class="movie_figure">
+                <img src="../static/img/half-life-3-pc-game-cover.jpg" alt="">
+                <figcaption>&#123;반지의 제왕&#125;</figcaption>
+            </figure>
+        </a>
+        <a href="movie_page.html">
+            <figure class="movie_figure">
+                <img src="../static/img/harry.webp" alt="">
+                <figcaption>&#123;반지의 제왕&#125;</figcaption>
+            </figure>
+        </a>
+        <a href="movie_page.html">
+            <figure class="movie_figure">
+                <img src="../static/img/home.png" alt="">
+                <figcaption>&#123;반지의 제왕&#125;</figcaption>
+            </figure>
+        </a>
+
+    </div>
+
+
+
+
+</body>
+</html>
