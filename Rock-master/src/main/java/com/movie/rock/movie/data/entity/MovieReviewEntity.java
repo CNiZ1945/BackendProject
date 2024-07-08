@@ -1,4 +1,4 @@
-package com.movie.rock.movie.data;
+package com.movie.rock.movie.data.entity;
 
 import com.movie.rock.member.data.MemberEntity;
 import jakarta.persistence.*;

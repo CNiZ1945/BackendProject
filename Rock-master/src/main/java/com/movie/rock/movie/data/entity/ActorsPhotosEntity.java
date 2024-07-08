@@ -1,4 +1,4 @@
-package com.movie.rock.movie.data;
+package com.movie.rock.movie.data.entity;
 
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -16,7 +16,7 @@ public class ActorsPhotosEntity {
     @Column(name = "a_photo_id")
     private int actorPhotoId;
 
-    @Column(name = "actor_id")
+    @Column(name = "actor_id", insertable = false, updatable = false) //중목 매핑 방지
     private int actorId;
 
     @Column(name = "actor_photo")

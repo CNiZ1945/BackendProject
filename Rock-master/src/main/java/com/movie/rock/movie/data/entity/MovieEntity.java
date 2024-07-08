@@ -1,4 +1,4 @@
-package com.movie.rock.movie.data;
+package com.movie.rock.movie.data.entity;
 
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -16,13 +16,10 @@ public class MovieEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "movie_id")
-    private int movieId;
+    private Long movieId;
 
     @Column(name = "movie_name")
     private String movieTitle;
-
-    @Column(name = "movie_genre")
-    private String movieGenre;
 
     @Column(name = "run_time")
     private int runTime;
@@ -52,22 +49,25 @@ public class MovieEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MovieReviewEntity> reviews;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MovieGenresEntity> genres;
+
     @OneToOne(fetch = FetchType.EAGER, mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
     private MovieFilmEntity movieFilm;
 
     @Builder
-    public MovieEntity(int movieId, String movieTitle, String movieGenre, int runTime, Integer openYear, String movieRating, String movieDescription,
-                       List<MovieActorsEntity> movieActors, List<MovieDirectorsEntity> movieDirectors, List<MoviePostersEntity> poster,
-                       List<MovieTrailersEntity> trailer, List<MovieReviewEntity> reviews,MovieFilmEntity movieFilm) {
+    public MovieEntity(Long movieId, String movieTitle, int runTime, Integer openYear, String movieRating, String movieDescription,
+                       List<MovieActorsEntity> movieActors, List<MovieDirectorsEntity> movieDirectors, List<MovieGenresEntity> genres,
+                       List<MoviePostersEntity> poster, List<MovieTrailersEntity> trailer, List<MovieReviewEntity> reviews,MovieFilmEntity movieFilm) {
         this.movieId = movieId;
         this.movieTitle = movieTitle;
-        this.movieGenre = movieGenre;
         this.runTime = runTime;
         this.openYear = openYear;
         this.movieRating = movieRating;
         this.movieDescription = movieDescription;
         this.movieActors = movieActors;
         this.movieDirectors = movieDirectors;
+        this.genres = genres;
         this.poster = poster;
         this.trailer = trailer;
         this.reviews = reviews;

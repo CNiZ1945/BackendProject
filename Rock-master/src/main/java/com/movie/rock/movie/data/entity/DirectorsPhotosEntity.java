@@ -1,4 +1,4 @@
-package com.movie.rock.movie.data;
+package com.movie.rock.movie.data.entity;
 
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -16,14 +16,14 @@ public class DirectorsPhotosEntity {
     @Column(name = "d_photo_id")
     private int directorPhotoId;
 
-    @Column(name = "director_id")
+    @Column(name = "director_id", insertable = false, updatable = false) //중복 매핑 방지
     private int directorId;
 
     @Column(name = "director_photo")
     private String directorPhoto;
 
     @ManyToOne
-    @JoinColumn(name = "director_id", referencedColumnName = "director_id")
+    @JoinColumn(name = "director_id", referencedColumnName = "director_id") //중복 매핑 방지
     private DirectorsEntity director;
 
     @Builder

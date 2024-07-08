@@ -1,7 +1,7 @@
 package com.movie.rock.movie.data.response;
 
-import com.movie.rock.movie.data.*;
-import com.movie.rock.movie.data.response.MovieInfoResponseDTO.ActorResponseDTO;
+import com.movie.rock.movie.data.entity.MovieEntity;
+import com.movie.rock.movie.data.response.MovieInfoResponseDTO.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +18,7 @@ import static com.movie.rock.movie.data.response.MovieInfoResponseDTO.*;
 public class MovieResponseDTO {
 
     //영화정보
-    private int movieId;
+    private Long movieId;
     private String movieTitle;
     private String movieGenre;
     private int runTime;
@@ -45,7 +45,7 @@ public class MovieResponseDTO {
     private List<MovieReviewResponseDTO> reviews;
 
     @Builder
-    public MovieResponseDTO(int movieId, String movieTitle, String movieGenre, int runTime, Integer openYear, String movieRating, String movieDescription,
+    public MovieResponseDTO(Long movieId, String movieTitle, String movieGenre, int runTime, Integer openYear, String movieRating, String movieDescription,
                             List<ActorResponseDTO> movieActors, List<DirectorResponseDTO> movieDirectors,
                             List<PosterResponseDTO> poster, List<TrailerResponseDTO> trailer,
                             FilmResponseDTO movieFilm, List<MovieReviewResponseDTO> reviews) {

@@ -1,4 +1,4 @@
 package com.movie.rock.movie.service;
 
-public interface MovieService {
+public class MovieAdminServiceImpl {
 }

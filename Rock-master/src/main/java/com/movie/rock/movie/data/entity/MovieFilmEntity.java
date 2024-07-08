@@ -1,4 +1,4 @@
-package com.movie.rock.movie.data;
+package com.movie.rock.movie.data.entity;
 
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class MovieFilmEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "film_id")
     private int filmId;
 

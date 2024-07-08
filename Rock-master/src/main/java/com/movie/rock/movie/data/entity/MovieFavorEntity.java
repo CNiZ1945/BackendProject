@@ -1,6 +1,7 @@
-package com.movie.rock.movie.data;
+package com.movie.rock.movie.data.entity;
 
 import com.movie.rock.member.data.MemberEntity;
+import com.movie.rock.movie.data.pk.MovieFavorPK;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
