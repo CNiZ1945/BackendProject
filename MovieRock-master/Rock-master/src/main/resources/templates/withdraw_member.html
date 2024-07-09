@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>탈퇴하기</title>
+    <link rel="stylesheet" href="../static/css/withdraw_member.css">
+</head>
+<body>
+    <h2>탈퇴하기</h2>
+
+    <div class="password_div">
+        <div>
+            비밀번호 입력: 
+        </div>
+        <div>
+            <input type="password" class="check_password">
+        </div>
+    </div>
+    <div class="password_div">
+        <div>
+            비밀번호 재확인: 
+        </div>
+        <div>
+            <input type="password" class="confirm_password">
+        </div>
+    </div>
+    <div class="withdraw">
+        <button class="withdraw_btn">탈퇴하기</button>
+    </div>
+    <div>
+        <a href="main.html">돌아가기</a>
+    </div>
+
+    <div class="modal_page">
+        <div class="modal_page_box">
+            <div class="withdraw_announce">
+                정말로 탈퇴하시겠습니까?
+            </div>
+            <br>
+            <div>
+                <button  class="withdraw_yes" onclick="location.href='main.html'">탈퇴하겠습니다</button>
+            </div>
+            <div class="withdraw_exit">
+                X
+            </div>
+
+        </div>
+    </div>
+
+    <script src="../static/js/withdraw_member.js"></script>
+
+</body>
+</html>
