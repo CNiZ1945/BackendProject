@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface MovieReviewRepository extends JpaRepository<MovieReviewEntity, Integer> {
+public interface MovieReviewRepository extends JpaRepository<MovieReviewEntity, Long> {
     //페이징, 리스트 맨 위에 본인 것 나오게 하기
     // 특정 영화에 대한 모든 리뷰 조회
     List<MovieReviewEntity> findByMovieMovieId(Long movieId);

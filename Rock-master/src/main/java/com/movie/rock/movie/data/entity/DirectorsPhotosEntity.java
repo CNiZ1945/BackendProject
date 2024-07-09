@@ -14,10 +14,10 @@ public class DirectorsPhotosEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "d_photo_id")
-    private int directorPhotoId;
+    private Long directorPhotoId;
 
     @Column(name = "director_id", insertable = false, updatable = false) //중복 매핑 방지
-    private int directorId;
+    private Long directorId;
 
     @Column(name = "director_photo")
     private String directorPhoto;
@@ -27,7 +27,7 @@ public class DirectorsPhotosEntity {
     private DirectorsEntity director;
 
     @Builder
-    public DirectorsPhotosEntity(int directorId, String directorPhoto, DirectorsEntity director) {
+    public DirectorsPhotosEntity(Long directorId, String directorPhoto, DirectorsEntity director) {
         this.directorId = directorId;
         this.directorPhoto = directorPhoto;
         this.director = director;

@@ -1,4 +1,5 @@
 package com.movie.rock.movie.controller;
 
-public class MovieReviewController {
-}
+
+public class MovieReviewController {}
+

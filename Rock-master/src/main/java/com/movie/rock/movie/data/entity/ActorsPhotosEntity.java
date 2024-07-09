@@ -14,10 +14,10 @@ public class ActorsPhotosEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "a_photo_id")
-    private int actorPhotoId;
+    private Long actorPhotoId;
 
     @Column(name = "actor_id", insertable = false, updatable = false) //중목 매핑 방지
-    private int actorId;
+    private Long actorId;
 
     @Column(name = "actor_photo")
     private String actorPhoto;
@@ -27,7 +27,7 @@ public class ActorsPhotosEntity {
     private ActorsEntity actor;
 
     @Builder
-    public ActorsPhotosEntity(int actorId, String actorPhoto, ActorsEntity actor) {
+    public ActorsPhotosEntity(Long actorId, String actorPhoto, ActorsEntity actor) {
         this.actorId = actorId;
         this.actorPhoto = actorPhoto;
         this.actor = actor;

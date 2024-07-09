@@ -50,15 +50,15 @@ public class MovieEntity {
     private List<MovieReviewEntity> reviews;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MovieGenresEntity> genres;
+    private List<MovieGenresEntity> movieGenres;
 
     @OneToOne(fetch = FetchType.EAGER, mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
     private MovieFilmEntity movieFilm;
 
     @Builder
     public MovieEntity(Long movieId, String movieTitle, int runTime, Integer openYear, String movieRating, String movieDescription,
-                       List<MovieActorsEntity> movieActors, List<MovieDirectorsEntity> movieDirectors, List<MovieGenresEntity> genres,
-                       List<MoviePostersEntity> poster, List<MovieTrailersEntity> trailer, List<MovieReviewEntity> reviews,MovieFilmEntity movieFilm) {
+                       List<MovieActorsEntity> movieActors, List<MovieDirectorsEntity> movieDirectors, List<MovieGenresEntity> movieGenres,
+                       List<MoviePostersEntity> poster, List<MovieTrailersEntity> trailer, List<MovieReviewEntity> reviews, MovieFilmEntity movieFilm) {
         this.movieId = movieId;
         this.movieTitle = movieTitle;
         this.runTime = runTime;
@@ -67,7 +67,7 @@ public class MovieEntity {
         this.movieDescription = movieDescription;
         this.movieActors = movieActors;
         this.movieDirectors = movieDirectors;
-        this.genres = genres;
+        this.movieGenres = movieGenres;
         this.poster = poster;
         this.trailer = trailer;
         this.reviews = reviews;

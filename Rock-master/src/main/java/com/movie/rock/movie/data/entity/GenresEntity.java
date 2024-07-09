@@ -16,7 +16,7 @@ public class GenresEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "genre_id")
-    private int genreId;
+    private Long genreId;
 
     @Column(name = "genre_name")
     private String genreName;
@@ -25,7 +25,7 @@ public class GenresEntity {
     private List<MovieGenresEntity> movieGenres;
 
     @Builder
-    public GenresEntity(int genreId, String genreName, List<MovieGenresEntity> movieGenres) {
+    public GenresEntity(Long genreId, String genreName, List<MovieGenresEntity> movieGenres) {
         this.genreId = genreId;
         this.genreName = genreName;
         this.movieGenres = movieGenres;

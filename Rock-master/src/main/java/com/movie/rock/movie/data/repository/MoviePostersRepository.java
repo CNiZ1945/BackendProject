@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface MoviePostersRepository extends JpaRepository<MoviePostersEntity, Integer> {
+public interface MoviePostersRepository extends JpaRepository<MoviePostersEntity, Long> {
     List<MoviePostersEntity> findByMovieMovieId(Long movieId);
 }

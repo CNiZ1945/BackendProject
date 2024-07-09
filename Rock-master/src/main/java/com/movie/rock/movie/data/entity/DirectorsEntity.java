@@ -16,7 +16,7 @@ public class DirectorsEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "director_id")
-    private int directorId;
+    private Long directorId;
 
     @Column(name = "director_name")
     private String directorName;
@@ -31,7 +31,7 @@ public class DirectorsEntity {
     private List<DirectorsPhotosEntity> directorPhotos;
 
     @Builder
-    public DirectorsEntity(int directorId, String directorName, Integer directorBirth, List<MovieDirectorsEntity> movieDirectors, List<DirectorsPhotosEntity> directorPhotos) {
+    public DirectorsEntity(Long directorId, String directorName, Integer directorBirth, List<MovieDirectorsEntity> movieDirectors, List<DirectorsPhotosEntity> directorPhotos) {
         this.directorId = directorId;
         this.directorName = directorName;
         this.directorBirth = directorBirth;

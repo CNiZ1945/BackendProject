@@ -16,11 +16,11 @@ public class MovieGenresPK implements Serializable {
     private Long movieId;
 
     @Column(name = "genre_id")
-    private int genreId;
+    private Long genreId;
 
     public MovieGenresPK() {}
 
-    public MovieGenresPK(Long movieId, int genreId) {
+    public MovieGenresPK(Long movieId, Long genreId) {
         this.movieId = movieId;
         this.genreId = genreId;
     }

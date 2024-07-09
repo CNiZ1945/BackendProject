@@ -15,13 +15,13 @@ public class MovieActorsPK implements Serializable {
     private Long movieId;
 
     @Column(name = "actor_id")
-    private int actorId;
+    private Long actorId;
 
     //기본 생성자
     public MovieActorsPK() {}
 
     //복합 키 생성자
-    public MovieActorsPK(Long movieId, int actorId) {
+    public MovieActorsPK(Long movieId, Long actorId) {
         this.movieId = movieId;
         this.actorId = actorId;
     }

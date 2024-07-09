@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface DirectorsPhotosRepository extends JpaRepository<DirectorsPhotosEntity, Integer> {
-    List<DirectorsPhotosEntity> findByDirectorDirectorsIdIn(List<Integer> directorIds);
+public interface DirectorsPhotosRepository extends JpaRepository<DirectorsPhotosEntity, Long> {
+    List<DirectorsPhotosEntity> findByDirectorDirectorsIdIn(List<Long> directorIds);
 }

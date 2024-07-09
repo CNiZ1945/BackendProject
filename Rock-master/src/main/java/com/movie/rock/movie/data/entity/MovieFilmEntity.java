@@ -14,7 +14,7 @@ public class MovieFilmEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "film_id")
-    private int filmId;
+    private Long filmId;
 
     @Column(name = "movie_film")
     private String movieFilm;
@@ -24,7 +24,7 @@ public class MovieFilmEntity {
     private MovieEntity movie;
 
     @Builder
-    public MovieFilmEntity(int filmId, String movieFilm, MovieEntity movie) {
+    public MovieFilmEntity(Long filmId, String movieFilm, MovieEntity movie) {
         this.filmId = filmId;
         this.movieFilm = movieFilm;
         this.movie = movie;

@@ -18,7 +18,7 @@ public class MovieReviewEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "review_id")
-    private int reviewId;
+    private Long reviewId;
 
     @Column(name = "review_content")
     private String reviewContent;
@@ -38,7 +38,7 @@ public class MovieReviewEntity {
     private MovieEntity movie;
 
     @Builder
-    public MovieReviewEntity(int reviewId, String reviewContent, double reviewRating, Date reviewDate, MemberEntity member, MovieEntity movie) {
+    public MovieReviewEntity(Long reviewId, String reviewContent, double reviewRating, Date reviewDate, MemberEntity member, MovieEntity movie) {
         this.reviewId = reviewId;
         this.reviewContent = reviewContent;
         this.reviewRating = reviewRating;

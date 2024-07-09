@@ -11,13 +11,13 @@ import java.util.Date;
 @NoArgsConstructor
 public class  MovieReviewResponseDTO {
 
-    private int reviewId;
+    private Long reviewId;
     private String reviewContent;
     private double reviewRating;
     private Date reviewDate;
 
     @Builder
-    public MovieReviewResponseDTO(int reviewId, String reviewContent, double reviewRating, Date reviewDate) {
+    public MovieReviewResponseDTO(Long reviewId, String reviewContent, double reviewRating, Date reviewDate) {
         this.reviewId = reviewId;
         this.reviewContent = reviewContent;
         this.reviewRating = reviewRating;
