@@ -1,6 +1,7 @@
 package com.movie.rock.member.data;
 
 //import com.movie.rock.board.data.BoardEntity;
+import com.movie.rock.board.data.BoardEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -49,8 +50,8 @@ public class MemberEntity {
     private RoleEnum memRole;
 
     //DB 및 연관관계 설정
-//    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    public List<BoardEntity> boards = new ArrayList<>();
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    public List<BoardEntity> boards = new ArrayList<>();
 
 
     @Builder

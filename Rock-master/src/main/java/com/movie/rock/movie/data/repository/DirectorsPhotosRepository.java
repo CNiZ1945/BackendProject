@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface DirectorsPhotosRepository extends JpaRepository<DirectorsPhotosEntity, Long> {
-    List<DirectorsPhotosEntity> findByDirectorDirectorsIdIn(List<Long> directorIds);
+//    List<DirectorsPhotosEntity> findByDirectorIdIn(List<Long> directorIds);
 }

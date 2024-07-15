@@ -12,18 +12,21 @@ import java.util.List;
 @Configuration
 public class CorsConfig {
 
-    /* CORS */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
 
         corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:8080"));
 
-        corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        // 허용할 HTTP 메서드
+        corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
 
+        // 허용할 헤더
         corsConfiguration.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization"));
-
+        
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        
+        // 모든경로에 대해 설정적용
         source.registerCorsConfiguration("/**", corsConfiguration);
         return source;
 

@@ -47,18 +47,22 @@ public class MovieEntity {
     private List<MovieTrailersEntity> trailer;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MovieReviewEntity> reviews;
+    private List<MovieGenresEntity> genres;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MovieGenresEntity> movieGenres;
+    private List<MovieReviewEntity> reviews;
+
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MovieFavorEntity> favorites;
 
     @OneToOne(fetch = FetchType.EAGER, mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
     private MovieFilmEntity movieFilm;
 
     @Builder
     public MovieEntity(Long movieId, String movieTitle, int runTime, Integer openYear, String movieRating, String movieDescription,
-                       List<MovieActorsEntity> movieActors, List<MovieDirectorsEntity> movieDirectors, List<MovieGenresEntity> movieGenres,
-                       List<MoviePostersEntity> poster, List<MovieTrailersEntity> trailer, List<MovieReviewEntity> reviews, MovieFilmEntity movieFilm) {
+                       List<MovieActorsEntity> movieActors, List<MovieDirectorsEntity> movieDirectors, List<MovieGenresEntity> genres,
+                       List<MoviePostersEntity> poster, List<MovieTrailersEntity> trailer, List<MovieReviewEntity> reviews, List<MovieFavorEntity> favorites,
+                       MovieFilmEntity movieFilm) {
         this.movieId = movieId;
         this.movieTitle = movieTitle;
         this.runTime = runTime;
@@ -67,12 +71,11 @@ public class MovieEntity {
         this.movieDescription = movieDescription;
         this.movieActors = movieActors;
         this.movieDirectors = movieDirectors;
-        this.movieGenres = movieGenres;
+        this.genres = genres;
         this.poster = poster;
         this.trailer = trailer;
         this.reviews = reviews;
+        this.favorites = favorites;
         this.movieFilm = movieFilm;
     }
-
-    //추가, 수정, 삭제 메소드
 }

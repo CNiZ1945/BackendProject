@@ -14,6 +14,11 @@ public class BoardWriteRequestDto {
     private String boardTitle;
     private String boardContent;
 
+    public BoardWriteRequestDto(String boardTitle, String boardContent) {
+        this.boardTitle = boardTitle;
+        this.boardContent = boardContent;
+    }
+
     @Builder
     public static BoardEntity ofEntity(BoardWriteRequestDto boardWriteRequestDto) {
         return BoardEntity.builder()

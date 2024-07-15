@@ -1,6 +1,6 @@
 package com.movie.rock.board.data;
 
-import com.movie.rock.board.common.BaseTimeEntity;
+import com.movie.rock.common.BaseTimeEntity;
 import com.movie.rock.file.data.BoardFileEntity;
 import com.movie.rock.member.data.MemberEntity;
 import jakarta.persistence.*;
@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.BatchSize;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -21,7 +20,7 @@ public class BoardEntity extends BaseTimeEntity {
 
     //공지사항 id
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "board_id")
     private Long boardId;
 
@@ -44,7 +43,7 @@ public class BoardEntity extends BaseTimeEntity {
     //유저번호
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mem_num")
-    private MemberEntity memNum;
+    private MemberEntity member;
 
     //공지사항 파일
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -52,12 +51,12 @@ public class BoardEntity extends BaseTimeEntity {
     public List<BoardFileEntity> files = new ArrayList<>();
 
     @Builder
-    public BoardEntity(Long boardId,String boardTitle, String boardContent, int boardViewCount, MemberEntity memNum, List<BoardFileEntity> files) {
+    public BoardEntity(Long boardId,String boardTitle, String boardContent, int boardViewCount, MemberEntity member, List<BoardFileEntity> files) {
         this.boardId = boardId;
         this.boardTitle = boardTitle;
         this.boardContent = boardContent;
         this.boardViewCount = boardViewCount;
-        this.memNum = memNum;
+        this.member = member;
     }
 
     //조회수 증가
@@ -74,9 +73,7 @@ public class BoardEntity extends BaseTimeEntity {
     //member + Board 연관관계 메서드 
     //member테이블에서 해당 memId가 쓴 공지사항을 가져올려고 씀
     public void setMappingMember(MemberEntity memberEntity) {
-        this.memNum = memberEntity;
+        this.member = memberEntity;
         memberEntity.getBoards().add(this);
     }
-
-
 }

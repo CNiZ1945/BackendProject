@@ -7,7 +7,8 @@ import java.util.Optional;
 // 김승준 - 회원
 public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
 
-//    Optional<MemberEntity> findByMenNum(Long menNum);
+    // 회원 고유번호로 확인
+    Optional<MemberEntity> findByMemNum(Long memNum);
 
     // 회원 ID로 확인
     Optional<MemberEntity> findByMemId(String memId);

@@ -17,16 +17,16 @@ public class MoviePostersEntity {
     private Long posterId;
 
     @Column(name = "movie_poster")
-    private String moviePoster;
+    private String posterUrls;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "movie_id", referencedColumnName = "movie_id")
     private MovieEntity movie;
 
     @Builder
-    public MoviePostersEntity(Long posterId, String moviePoster, MovieEntity movie) {
+    public MoviePostersEntity(Long posterId, String posterUrls, MovieEntity movie) {
         this.posterId = posterId;
-        this.moviePoster = moviePoster;
+        this.posterUrls = posterUrls;
         this.movie = movie;
     }
 }

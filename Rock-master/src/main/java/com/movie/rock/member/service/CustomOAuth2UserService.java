@@ -27,19 +27,21 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
+        // OAuth2 제공자로서 받은 정보에서 이메일 추출
         String email = oAuth2User.getAttribute("email");
         Optional<MemberEntity> existingMember = memberRepository.findByMemEmail(email);
 
+        // 해당 이메일로 등록된 회원정보가 DB에 없으면 생성
         if (!existingMember.isPresent()) {
             MemberEntity newMember = MemberEntity.builder()
-                    .memId(oAuth2User.getAttribute("sub"))
+                    .memId(oAuth2User.getAttribute("sub")) // 제공된 기본 ID
                     .memEmail(email)
                     .memName(oAuth2User.getAttribute("name"))
-                    .memPassword("구글사용자") // Password is not needed for OAuth2
-                    .memGender("구글사용자") // Default value for gender
-                    .memTel("구글사용자") // Default value for telephone number
-                    .memBirth(LocalDate.now()) // Default value for birth date
-                    .memRole(RoleEnum.USER)
+                    .memPassword("구글사용자") // 비밀번호가 필요없음
+                    .memGender("구글사용자") // 기본값
+                    .memTel("구글사용자") // 기본값
+                    .memBirth(LocalDate.now()) // 기본값
+                    .memRole(RoleEnum.USER) // 권한 = 회원
                     .build();
             memberRepository.save(newMember);
         }
@@ -47,6 +49,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return oAuth2User;
     }
 
+    // JWT 토큰 생성
     public String generateToken(OAuth2User oAuth2User) {
         String email = oAuth2User.getAttribute("email");
         Optional<MemberEntity> member = memberRepository.findByMemEmail(email);

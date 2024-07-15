@@ -13,7 +13,7 @@ public class BoardUpdateRequestDto {
     private String boardTitle;
     private String boardContent;
 
-    //인스턴스를 생성하는데 사용
+    //인스턴스를 생성하는데 사용 생성자 초기화
     @Builder
     public BoardUpdateRequestDto(String boardTitle, String boardContent) {
         this.boardTitle = boardTitle;

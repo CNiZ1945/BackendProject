@@ -1,6 +1,6 @@
 package com.movie.rock.movie.data.entity;
 
-import com.movie.rock.movie.data.pk.MovieActorsPK;
+import com.movie.rock.movie.data.pk.MovieGenresPK;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class MovieGenresEntity {
 
     @EmbeddedId
-    private MovieActorsPK id;
+    private MovieGenresPK id;  // MovieActorsPK 대신 MovieGenresPK 사용
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("movieId")
@@ -29,7 +29,14 @@ public class MovieGenresEntity {
     public MovieGenresEntity(MovieEntity movie, GenresEntity genre) {
         this.movie = movie;
         this.genre = genre;
-        this.id = new MovieActorsPK(movie.getMovieId(), genre.getGenreId());
+        this.id = new MovieGenresPK(movie.getMovieId(), genre.getGenreId());
+    }
 
+    public void setMovie(MovieEntity movie) {
+        this.movie = movie;
+        // 복합 키(MovieActorsPK)를 생성합니다. 영화와 장르가 모두 설정된 경우에만 수행합니다.
+        if (movie != null && genre != null) {
+            this.id = new MovieGenresPK(movie.getMovieId(), genre.getGenreId());
+        }
     }
 }

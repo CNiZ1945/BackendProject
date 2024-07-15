@@ -32,4 +32,18 @@ public class MovieFavorEntity {
         this.movie = movie;
         this.id = new MovieFavorPK(member.getMemNum(), movie.getMovieId());
     }
+
+    public void setMovie(MovieEntity movie) {
+        this.movie = movie;
+        if (movie != null) {
+            this.id = new MovieFavorPK(this.member.getMemNum(), movie.getMovieId());
+        }
+    }
+
+    public void setMember(MemberEntity member) {
+        this.member = member;
+        if (member != null && this.movie != null) {
+            this.id = new MovieFavorPK(member.getMemNum(), this.movie.getMovieId());
+        }
+    }
 }

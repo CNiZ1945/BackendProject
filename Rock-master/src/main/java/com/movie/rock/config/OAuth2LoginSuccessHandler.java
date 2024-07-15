@@ -19,10 +19,14 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
+
+        // 인증된 사용자 정보 커스텀
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+
+        // 서비스를 통해 토큰 생성
         String token = customOAuth2UserService.generateToken(oAuth2User);
 
         // 클라이언트에 JWT 토큰과 로그인 방식을 전달 (URL 파라미터로)
-        getRedirectStrategy().sendRedirect(request, response, "/main?token=" + token + "&loginMethod=google");
+        getRedirectStrategy().sendRedirect(request, response, "/?token=" + token + "&loginMethod=google");
     }
 }

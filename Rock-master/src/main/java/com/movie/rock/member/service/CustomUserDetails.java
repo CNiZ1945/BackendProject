@@ -9,13 +9,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 // 김승준 - 회원
-public class CustomUserDetails implements UserDetails {
-
-    private final MemberEntity memberEntity;
-
-    public CustomUserDetails(MemberEntity memberEntity) {
-        this.memberEntity = memberEntity;
-    }
+public record CustomUserDetails(MemberEntity memberEntity) implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -29,7 +23,11 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return memberEntity.getMemId();
+        return memberEntity.getMemName();
+    }
+
+    public Long getMemNum() {
+        return memberEntity.getMemNum();
     }
 
     @Override

@@ -30,4 +30,5 @@ public class SignupRequestDTO {
     private RoleEnum memRole;
 
 
+
 }

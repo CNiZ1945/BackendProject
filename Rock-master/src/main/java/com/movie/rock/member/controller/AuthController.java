@@ -1,10 +1,12 @@
 package com.movie.rock.member.controller;
 
 import com.movie.rock.config.JwtUtil;
+import com.movie.rock.config.TokenRefreshRequest;
 import com.movie.rock.member.data.*;
 import com.movie.rock.member.service.CustomUserDetailsService;
 import com.movie.rock.member.service.MemberService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,17 +14,18 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
 // 김승준 - 회원
 
-// 아찾 = 이메일 이름 || 비찾 = 아이디 이메일
-// 회원 정보 찾기 번호로 아이디로 이름으로 이메일로 전화번호로
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/auth") // 경로 지정
 public class AuthController {
 
 
@@ -48,52 +51,70 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequestDTO authRequestDTO) throws Exception {
         try {
+            // 사용자 인증
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authRequestDTO.getMemId(), authRequestDTO.getMemPassword()));
         } catch (AuthenticationException e) {
             throw new Exception("잘못된 자격 증명", e);
         }
 
+        // JWT 토큰 생성
         final String accessToken = jwtUtil.generateAccessToken(authRequestDTO.getMemId());
         final String refreshToken = jwtUtil.generateRefreshToken(authRequestDTO.getMemPassword());
 
         return ResponseEntity.ok(new AuthResponseDTO(accessToken, refreshToken, "custom"));
     }
 
-    // 회원가입
-    @PostMapping("/signup")
-    public ResponseEntity<?> register(@RequestBody SignupRequestDTO signupRequestDTO) {
+    // 로그아웃
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@RequestHeader("Authorization") String token) {
+        token = token.substring(7);
 
-        if (!signupRequestDTO.getMemPassword().equals(signupRequestDTO.getMemPasswordCheck())) {
-            return ResponseEntity.badRequest().body("비밀번호가 일치하지 않습니다.");
-        }
+        return ResponseEntity.ok("로그아웃 되었습니다.");
+    }
 
-        // SignupRequest를 MemberDTO로 변환
-        MemberDTO memberDTO = new MemberDTO();
+    // 회원가입 - 아이디 중복 체크
+    @GetMapping("/check-id")
+    public ResponseEntity<Boolean> checkUsername(@RequestParam String memId) {
+        return ResponseEntity.ok(memberService.isUsernameExists(memId));
+    }
 
-        memberDTO.setMemId(signupRequestDTO.getMemId());
+    // 회원가입 - 이메일 중복 체크
+    @GetMapping("/check-email")
+    public ResponseEntity<Boolean> checkEmail(@RequestParam String memEmail) {
+        return ResponseEntity.ok(memberService.isEmailExists(memEmail));
+    }
 
-        memberDTO.setMemPassword(signupRequestDTO.getMemPassword());
-
-        memberDTO.setMemEmail(signupRequestDTO.getMemEmail());
-
-        memberDTO.setMemTel(signupRequestDTO.getMemTel());
-
-        memberDTO.setMemGender(signupRequestDTO.getMemGender());
-
-        memberDTO.setMemRole(RoleEnum.USER);
-        
-        memberDTO.setMemName(signupRequestDTO.getMemName());
-
-        memberDTO.setMemBirth(signupRequestDTO.getMemBirth());
-
+    // 회원가입 - 이메일 인증 메일발송
+    @PostMapping("/send-verification-email")
+    public ResponseEntity<String> sendVerificationEmail(@RequestParam String memEmail) {
         try {
-            memberService.registerNewMember(memberDTO);
-
-            return ResponseEntity.ok("회원가입에 성공하였습니다.");
-
+            memberService.sendSignUpVerificationEmail(memEmail);
+            return ResponseEntity.ok("인증 이메일이 전송되었습니다.");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    // 회원가입 - 이메일 인증
+    @PostMapping("/verify-email")
+    public ResponseEntity<String> verifyEmail(@RequestParam String email, @RequestParam String verificationCode) {
+        boolean verified = memberService.verifySignUpEmail(email, verificationCode);
+        if (verified) {
+            return ResponseEntity.ok("이메일이 성공적으로 인증되었습니다.");
+        } else {
+            return ResponseEntity.badRequest().body("이메일 인증에 실패했습니다.");
+        }
+    }
+
+    // 회원가입 - 회원정보 저장
+    @PostMapping("/signup")
+    public ResponseEntity<String> signUp(@RequestBody SignupRequestDTO signupRequestDTO) {
+        try {
+            memberService.registerNewMember(signupRequestDTO);
+            return ResponseEntity.ok("회원가입이 완료되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
@@ -114,17 +135,16 @@ public class AuthController {
         // 필요한 정보만 포함하는 DTO 생성
         MemberInfoDTO memberInfo = new MemberInfoDTO();
 
-        memberInfo.setMemId(member.getMemId());
-
-        memberInfo.setMemName(member.getMemName());
-
         memberInfo.setMemEmail(member.getMemEmail());
 
-        memberInfo.setMemTel(member.getMemTel());
+        memberInfo.setMemName(member.getMemName());
 
         memberInfo.setMemGender(member.getMemGender());
 
         memberInfo.setMemRole(member.getMemRole());
+
+//        memberInfo.setMemTel(member.getMemTel());
+//        memberInfo.setMemId(member.getMemId());
 
         return ResponseEntity.ok(memberInfo);
     }
@@ -176,9 +196,7 @@ public class AuthController {
         }
     }
 
-    // 비밀번호 변경
-
-    // 1. 비밀번호 찾기
+    // 비밀번호 찾기
     @PostMapping("/find-password")
     public ResponseEntity<?> findPassword(@RequestBody FindPasswordRequestDTO request) {
         try {
@@ -197,7 +215,7 @@ public class AuthController {
         }
     }
 
-    // 2. 비밀번호 재설정
+    // 비밀번호 찾기 - 비밀번호 재설정
     @PostMapping("/reset-password")
     public ResponseEntity<String> resetPassword(@RequestParam("token") String token, @RequestBody UpdatePasswordDTO updatePasswordDto) {
         try {
@@ -212,32 +230,24 @@ public class AuthController {
         }
     }
 
-
-
-
-
-
     // 토큰 리프래쉬
-//    @PostMapping("/refresh")
-//    public ResponseEntity<?> refreshToken(@RequestBody TokenRefreshRequest request) {
-//        try {
-//            String refreshToken = request.getRefreshToken();
-//            String memId = jwtUtil.extractMemberId(refreshToken);
-//
-//            if (memId != null && jwtUtil.isTokenValid(refreshToken, memId)) {
-//                UserDetails userDetails = userDetailsService.loadUserByUsername(memId);
-//                // 여기를 수정합니다
-//                String newAccessToken = jwtUtil.generateAccessToken(userDetails.getUsername());
-//                // 선택적: 리프레시 토큰 재발급 (보안 강화를 위해)
-//                String newRefreshToken = jwtUtil.generateRefreshToken(userDetails.getUsername());
-//
-//                return ResponseEntity.ok(new AuthResponseDTO(newAccessToken, newRefreshToken, "custom"));
-//            } else {
-//                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Refresh Token");
-//            }
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error refreshing token");
-//        }
-//    }
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refreshToken(@RequestBody TokenRefreshRequest request) {
+        try {
+            String refreshToken = request.getRefreshToken();
+            String memId = jwtUtil.extractMemberId(refreshToken);
 
+            if (memId != null && jwtUtil.isTokenValid(refreshToken, memId)) {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(memId);
+                String newAccessToken = jwtUtil.generateAccessToken(userDetails.getUsername());
+                String newRefreshToken = jwtUtil.generateRefreshToken(userDetails.getUsername());
+
+                return ResponseEntity.ok(new AuthResponseDTO(newAccessToken, newRefreshToken, "custom"));
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Refresh Token");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error refreshing token");
+        }
+    }
 }

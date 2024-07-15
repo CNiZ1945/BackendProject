@@ -96,8 +96,12 @@ public class MovieInfoResponseDTO {
         public static PosterResponseDTO fromEntity(MoviePostersEntity poster) {
             return PosterResponseDTO.builder()
                     .posterId(poster.getPosterId())
-                    .moviePoster(poster.getMoviePoster())
+                    .moviePoster(poster.getPosterUrls())
                     .build();
+        }
+
+        public String getPosterUrl() {
+            return moviePoster;
         }
     }
 
@@ -116,7 +120,7 @@ public class MovieInfoResponseDTO {
         public static TrailerResponseDTO fromEntity(MovieTrailersEntity trailer) {
             return TrailerResponseDTO.builder()
                     .trailerId(trailer.getTrailerId())
-                    .movieTrailer(trailer.getMovieTrailer())
+                    .movieTrailer(trailer.getTrailerUrls())
                     .build();
         }
     }

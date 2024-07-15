@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="rock_db@localhost" uuid="d4b3c224-8c72-49b6-a866-0453570e09fa">
+    <data-source source="LOCAL" name="rock_db@localhost" uuid="10037248-facf-4200-9109-0fa3983e15d6">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
       <imported>true</imported>

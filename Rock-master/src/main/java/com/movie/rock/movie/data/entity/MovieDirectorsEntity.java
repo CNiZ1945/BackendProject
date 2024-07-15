@@ -31,4 +31,10 @@ public class MovieDirectorsEntity {
         this.director = director;
         this.id = new MovieDirectorsPK(movie.getMovieId(), director.getDirectorId());
     }
+
+    //연관관계설정
+    public void setMovie(MovieEntity movie) {
+        this.movie = movie;
+        movie.getMovieDirectors().add(this);
+    }
 }

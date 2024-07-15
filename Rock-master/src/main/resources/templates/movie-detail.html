@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Movie Detail</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .movie {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .movie_explain {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .book_mark {
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .tab {
+            margin-bottom: 20px;
+        }
+
+        .tab_menu {
+            list-style-type: none;
+            padding: 0;
+            display: flex;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .tab_menu li {
+            margin-right: 20px;
+            cursor: pointer;
+        }
+
+        .tab_menu li.active {
+            font-weight: bold;
+            border-bottom: 2px solid #000;
+        }
+
+        .tab-content {
+            padding: 20px 0;
+        }
+
+        .review_writer, .review_content, .review_time, .review_star {
+            margin-bottom: 10px;
+        }
+
+        .review_actions {
+            text-align: right;
+        }
+
+        .bg {
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        .button {
+            display: block;
+            width: 200px;
+            margin: 0 auto;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="movie" th:style="${'display: none;'}">
+    <div class="movie_explain">
+        <div class="book_mark" th:classappend="${favorStatus.isFavorite} ? 'active'" th:onclick="toggleFavorite([[${movie.movieId}]], this)"></div>
+    </div>
+
+    <div class="explain">
+        <div class="title">
+            <h2 id="section" th:text="${movie.movieTitle}"></h2>
+        </div>
+    </div>
+
+    <div class="tab">
+        <ul>
+            <li>스틸컷</li>
+            <li>리뷰</li>
+            <li>예고편</li>
+        </ul>
+
+        <div class="tab-content">
+            <div id="still_cut_div"></div>
+
+            <div id="review_div">
+                <div class="review_actions" th:if="${ownReview == null}">
+                    작성하기
+                </div>
+
+                <div class="review" th:each="review : ${movie.reviews}">
+                    <div class="review_writer" th:text="${review.member.memName}"></div>
+                    <div class="review_content" th:text="${review.reviewContent}"></div>
+                    <div class="review_time" th:if="${review.modifyDate != null}" th:text="${review.modifyDate}"></div>
+                    <div class="review_time" th:if="${review.modifyDate == null}" th:text="${review.createDate}"></div>
+                    <div class="review_star" th:text="${review.reviewRating + '/5'}"></div>
+                    <div class="review_actions" th:if="${review.member.memNum == #authentication.principal.memNum}">
+                        <a th:href="@{'/movies/{movieId}/reviews/{reviewId}/edit'(movieId=${movie.movieId}, reviewId=${review.reviewId})}">수정</a>
+                        <a th:href="@{'/movies/{movieId}/reviews/{reviewId}/delete'(movieId=${movie.movieId}, reviewId=${review.reviewId})}">삭제</a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="preview_div"></div>
+        </div>
+    </div>
+
+    <div class="bg">
+        <div class="button">영화 보러 가기</div>
+    </div>
+
+    <div class="bg">
+        <div class="button" th:onclick="location.href='@{/movies/{movieId}(movieId=${movie.movieId})}'">영화 보러 가기</div>
+    </div>
+</div>
+
+<script src="https://kit.fontawesome.com/your-font-awesome-kit-code.js" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const token = localStorage.getItem('accessToken'); // Assuming the token is stored in localStorage
+
+        if (token) {
+            axios.get('/auth/memberinfo', {
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+            })
+                .then(response => {
+                    const role = response.data.memRole;
+                    if (role !== 'ADMIN' && role !== 'USER' ) {
+                        alert("권한이 없습니다.");
+                        window.location.href = '/main';
+
+                    } else {
+                        document.querySelector('.body').style.display = 'block';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching user info:', error);
+                    alert("오류가 발생했습니다. 다시 로그인해주세요.");
+                    window.location.href = '/login';
+                });
+        } else {
+            alert("로그인이 필요합니다.");
+            window.location.href = '/login';
+        }
+    });
+
+
+    function toggleFavorite(movieId, element) {
+        var isFavorite = element.classList.contains('active');
+        var url = isFavorite ? '/user/favorites/' + movieId : '/user/favorites';
+        var method = isFavorite ? 'DELETE' : 'POST';
+
+        fetch(url, {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ movieId: movieId })
+        })
+            .then(response => response.json())
+            .then(data => {
+                element.classList.toggle('active');
+                element.querySelector('.fas').classList.toggle('text-danger');
+            })
+            .catch(error => {
+                console.error('Error toggling favorite:', error);
+            });
+    }
+</script>
+</body>
+</html>

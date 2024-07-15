@@ -16,17 +16,17 @@ public class MovieTrailersEntity {
     @Column(name = "trailer_id")
     private Long trailerId;
 
-    @Column(name = "movie_trailer")
-    private String movieTrailer;
+    @Column(name = "trailer_url")
+    private String trailerUrls;
 
     @ManyToOne
     @JoinColumn(name = "movie_id", referencedColumnName = "movie_id")
     private MovieEntity movie;
 
     @Builder
-    public MovieTrailersEntity(Long trailerId, String movieTrailer, MovieEntity movie) {
+    public MovieTrailersEntity(Long trailerId, String trailerUrls, MovieEntity movie) {
         this.trailerId = trailerId;
-        this.movieTrailer = movieTrailer;
+        this.trailerUrls = trailerUrls;
         this.movie = movie;
     }
 }

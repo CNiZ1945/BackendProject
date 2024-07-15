@@ -8,6 +8,7 @@ import java.io.Serializable;
 
 @Embeddable
 public class MovieActorsPK implements Serializable {
+
     @Serial
     private static final long serialVersionUID = 1L;
 

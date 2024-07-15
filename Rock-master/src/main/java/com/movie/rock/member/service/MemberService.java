@@ -7,46 +7,98 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 // 김승준 - 회원
 @Service
-@Transactional
 public class MemberService {
 
     @Autowired
     private MemberRepository memberRepository;
 
     @Autowired
-    private PasswordEncoder passwordEncoder; // 패스워드 암호화를 위한 빈
-
-    private MemberDTO memberDTO;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private StringHttpMessageConverter stringHttpMessageConverter;
+    private PasswordResetTokenRepository passwordResetTokenRepository;
 
-    // 회원가입 로직
-    public void registerNewMember(MemberDTO memberDTO) throws Exception {
-        if (memberRepository.findByMemId(memberDTO.getMemId()).isPresent()) {
-            throw new Exception("아이디가 이미 사용중입니다.");
-        }
-        if(memberRepository.findByMemEmail(memberDTO.getMemEmail()).isPresent()) {
-            throw new Exception("이메일이 이미 사용중입니다.");
-        }
+    @Autowired
+    private JavaMailSender mailSender;
 
-        String encodedPassword = passwordEncoder.encode(memberDTO.getMemPassword());
+    @Autowired
+    private EmailVerificationService emailVerificationService;
 
-        memberRepository.save(memberDTO.toEntity(encodedPassword));
+    // 아이디와 이메일로 회원 찾기
+    public MemberEntity findMemberByUsernameAndEmail(String memId, String memEmail) {
+        return memberRepository.findByMemIdAndMemEmail(memId, memEmail)
+                .orElse(null);
+    }
+    
+    // 이메일로 회원 찾기
+    public Optional<MemberEntity> findByEmail(String memEmail) {
+        return memberRepository.findByMemEmail(memEmail);
     }
 
-    // 회원탈퇴 로직
+    // 회원가입 이메일 인증 발송
+    public void sendSignUpVerificationEmail(String memEmail) throws Exception {
+        if (memberRepository.findByMemEmail(memEmail).isPresent()) {
+            throw new Exception("이메일이 이미 사용중입니다.");
+        }
+        emailVerificationService.sendSignUpVerificationEmail(memEmail);
+    }
+
+    // 회원가입 이메일 인증 확인
+    public boolean verifySignUpEmail(String email, String verificationCode) {
+        return emailVerificationService.verifySignUpEmail(email, verificationCode);
+    }
+
+    // 새 회원 등록
+    @Transactional
+    public void registerNewMember(SignupRequestDTO signupRequestDTO) throws Exception {
+        if (memberRepository.findByMemId(signupRequestDTO.getMemId()).isPresent()) {
+            throw new Exception("아이디가 이미 사용중입니다.");
+        }
+
+        if (!emailVerificationService.isEmailVerifiedForSignUp(signupRequestDTO.getMemEmail())) {
+            throw new Exception("이메일 인증이 완료되지 않았습니다.");
+        }
+
+        String encodedPassword = passwordEncoder.encode(signupRequestDTO.getMemPassword());
+
+        MemberEntity newMember = MemberEntity
+                .builder()
+                .memId(signupRequestDTO.getMemId())
+                .memPassword(encodedPassword)
+                .memName(signupRequestDTO.getMemName())
+                .memEmail(signupRequestDTO.getMemEmail())
+                .memTel(signupRequestDTO.getMemTel())
+                .memGender(signupRequestDTO.getMemGender())
+                .memBirth(signupRequestDTO.getMemBirth())
+                .memRole(RoleEnum.USER)
+                .build();
+
+        memberRepository.save(newMember);
+    }
+
+    // 아이디 중복 확인
+    public boolean isUsernameExists(String username) {
+        return memberRepository.findByMemId(username).isPresent();
+    }
+
+    // 이메일 중복 확인
+    public boolean isEmailExists(String email) {
+        return memberRepository.findByMemEmail(email).isPresent();
+    }
+
+    // 회원탈퇴
+    @Transactional
     public void delete(String memId) throws Exception {
         Optional<MemberEntity> member = memberRepository.findByMemId(memId);
         if(member.isPresent()) {
@@ -56,7 +108,21 @@ public class MemberService {
         }
     }
 
-    // 회원정보 수정 로직
+    // 회원 단체 탈퇴
+    @Transactional
+    public void deleteMultipleMembers(List<String> memIds) throws Exception {
+        for (String memId : memIds) {
+            Optional<MemberEntity> member = memberRepository.findByMemId(memId);
+            if (member.isPresent()) {
+                memberRepository.delete(member.get());
+            } else {
+                throw new Exception("회원 정보를 찾을 수 없습니다");
+            }
+        }
+    }
+
+    // 회원 정보 수정
+    @Transactional
     public void updateMember(String memId, UpdateMemberDTO updateDto) {
         MemberEntity member = memberRepository.findByMemId(memId)
                 .orElseThrow(() -> new EntityNotFoundException("회원을 찾을 수 없습니다."));
@@ -92,21 +158,7 @@ public class MemberService {
         return memberRepository.findByMemId(memId).orElse(null);
     }
 
-
-
-
-
-
-
-    // -------------------------------------------------------
-
-    @Autowired
-    private PasswordResetTokenRepository passwordResetTokenRepository;
-
-    @Autowired
-    private JavaMailSender mailSender;
-
-
+    // 비밀번호 재설정 토큰 생성
     @Transactional
     public void createPasswordResetTokenForMember(MemberEntity member, String token) {
 
@@ -115,7 +167,7 @@ public class MemberService {
         passwordResetTokenRepository.deleteAllByMember(member);
 
         // 새 토큰 생성
-        PasswordResetTokenDTO myToken = PasswordResetTokenDTO.builder()
+        PasswordResetTokenEntity myToken = PasswordResetTokenEntity.builder()
                 .token(token)
                 .member(member)
                 .expiryDate(LocalDateTime.now().plusHours(24))
@@ -131,9 +183,10 @@ public class MemberService {
         }
     }
 
+    // 비밀번호 재설정
     @Transactional
     public void resetPassword(String token, String newPassword) {
-        PasswordResetTokenDTO resetToken = passwordResetTokenRepository.findByToken(token)
+        PasswordResetTokenEntity resetToken = passwordResetTokenRepository.findByToken(token)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid token"));
 
         if (resetToken.getExpiryDate().isBefore(LocalDateTime.now())) {
@@ -148,7 +201,7 @@ public class MemberService {
 
     }
 
-
+    // 비밀번호 재설정 이메일 발송
     public void sendPasswordResetEmail(String email, String token) {
         try {
             String subject = "Rock 비밀번호 재설정";
@@ -171,34 +224,10 @@ public class MemberService {
         }
     }
 
+    // 비밀번호 재설정 토큰으로 회원 조회
     public Optional<MemberEntity> getMemberByPasswordResetToken(String token) {
         return passwordResetTokenRepository.findByToken(token)
-                .map(PasswordResetTokenDTO::getMember);
+                .map(PasswordResetTokenEntity::getMember);
     }
-
-    public void updatePassword(String memId, UpdatePasswordDTO updatePasswordDto) {
-        MemberEntity member = memberRepository.findByMemId(memId)
-                .orElseThrow(() -> new EntityNotFoundException("회원을 찾을 수 없습니다."));
-
-        if (!updatePasswordDto.getMemNewPassword().equals(updatePasswordDto.getMemNewPasswordCheck())) {
-            throw new IllegalArgumentException("새 비밀번호와 확인 비밀번호가 일치하지 않습니다.");
-        }
-
-        member.updatePassword(passwordEncoder.encode(updatePasswordDto.getMemNewPassword()));
-        memberRepository.save(member);
-    }
-
-    public MemberEntity findMemberByUsernameAndEmail(String username, String email) {
-        return memberRepository.findByMemIdAndMemEmail(username, email)
-                .orElse(null);
-    }
-
-    public Optional<MemberEntity> findByEmail(String email) {
-        return memberRepository.findByMemEmail(email);
-    }
-
-
-
-
 
 }

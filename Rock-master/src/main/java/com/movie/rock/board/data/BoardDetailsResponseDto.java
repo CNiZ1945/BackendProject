@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,7 +20,7 @@ public class BoardDetailsResponseDto {
     private String boardContent;
     private int boardViewCount;
     private String createDate; //작성 날짜 BaseTimeEntity랑 변수명이 같아야함
-    private String modifieDate; //수정 날짜 BaseTimeEntity랑 변수명이 같아야함
+    private String modifyDate; //수정 날짜 BaseTimeEntity랑 변수명이 같아야함
 
     //파일 list = 여러개의 파일을 uploac할 수있어서
     private List<BoardDetailsFileResponseDto> files;
@@ -29,13 +28,13 @@ public class BoardDetailsResponseDto {
     //생성자 초기화
     @Builder
     public BoardDetailsResponseDto(Long boardId, String boardTitle, String boardContent,
-                                   int boardViewCount, String createDate, String modifieDate, List<BoardDetailsFileResponseDto> files) {
+                                   int boardViewCount, String createDate, String modifyDate, List<BoardDetailsFileResponseDto> files) {
         this.boardId = boardId;
         this.boardTitle = boardTitle;
         this.boardContent = boardContent;
         this.boardViewCount = boardViewCount;
         this.createDate = createDate;
-        this.modifieDate = modifieDate;
+        this.modifyDate = modifyDate;
         this.files = files;
     }
     
@@ -47,7 +46,7 @@ public class BoardDetailsResponseDto {
                 .boardContent(boardEntity.getBoardContent())
                 .boardViewCount(boardEntity.getBoardViewCount())
                 .createDate(boardEntity.getCreateDate())
-                .modifieDate(boardEntity.getModifieDate())
+                .modifyDate(boardEntity.getModifyDate())
                 .files(boardEntity.getFiles().stream().map(BoardDetailsFileResponseDto::fromEntity).collect(Collectors.toList()))
                 .build();
         // boardEntity.getFiles()는 FileEntity 객체들의 리스트인 List<FileEntity>를 반환

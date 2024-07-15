@@ -5,10 +5,12 @@ import lombok.Data;
 // 김승준 - 회원
 @Data
 public class MemberInfoDTO {
-    private String memId;
-    private String memTel;
+
     private String memEmail;
+
     private String memName;
+
     private String memGender;
+
     private RoleEnum memRole;
 }

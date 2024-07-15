@@ -1,203 +1,156 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>반지의 제왕</title>
-    <link rel="stylesheet" href="../static/css/movie_page.css" >
+    <title th:text="${movie != null ? movie.movieTitle : '영화 상세 정보'}">영화 상세 정보</title>
+    <link rel="stylesheet" href="../static/css/movie_page.css" th:href="@{/css/movie_page.css}">
     <link href="https://fonts.googleapis.com/css2?family=Montaga&family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css" integrity="sha512-10/jx2EXwxxWqCLX/hHth/vu2KY3jCF70dCQB8TSgNjbCVAC/8vai53GfMDrO2Emgwccf2pJqxct9ehpzG+MTw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
 </head>
 <body class="body" style="display: none;">
-    <header>
-        <!-- 헤더 오른쪽 -->
-        <div class="header_right">
-            <div class="logo_img">
-                <!-- 로고 이미지 -->
-                <a href="main.html"><img src="http://placehold.it/70X70" alt=""></a>
-            </div>
-        </div>
-        <!-- 검색창 -->
-        <div class="search">
-            <form action="">
-                <input type="text" name="" id="" class="search_input" placeholder="오늘은 무슨 영화를 볼까?">
-                <button class="search_btn" type="submit">
-                    <i class="fa-solid fa-magnifying-glass-arrow-right fa-3x " ></i>
-                </button>
-            </form>
-        </div>
-        <!-- 헤더 왼쪽 -->
-        <div class="header_left">
-    
-            <div class="profile">
-                <!-- 동그라미 프로필 공간 -->
-            </div>
-            <div class="profile_menu">
-                <!-- <ul>
-                    <a href=""><li>마이페이지</li></a>
-                    <a href=""><li>공지사항</li></a>
-                    <a href=""><li>로그아웃</li></a>
-                </ul> -->
-            </div>
-                <!-- 추후에 로그인후에 로그아웃으로 바뀌도록 작성 -->
-        </div> 
-    </header>
-    <!--  ========================== header =================================  -->
-    <!-- ========================== 영화 상세 설명 ================================= -->
-    <div class="movie">
-        <img src="../static/img/the_ring_poster.webp" alt="" class="movie_bg">
-        <div class="movie_explain">
-            <!-- 영화 상세 설명 -->
-            <!-- <div class="poster">
-                <img src="img/the_ring_poster.webp" alt="">
-            </div> -->
-            <div class="book_mark">
-                <button>&#10084;</button>
-            </div>
-            <div class="explain">
+<header>
+    <!-- 헤더 내용 (변경 없음) -->
+</header>
 
-                <div class="title">
-                    <ul>
-                        <li class="movie_title">영화 제목: 반지의 제왕</li>
-                        <li class="movie_genre">영화 장르: 판타지</li>
-                        <li class="movie_director">영화 감독: 피터 잭슨</li>
-                        <li class="movie_actor">영화 배우: {배우 1}, {배우 2}, {배우 3}, {배우 4}, {배우 5}</li>
-                        <li class="movie_time">영화 시간: 120분</li>
-                        <li class="movie_year">개봉 년도: 2001년</li>
-                        <li class="movie_content">영화 내용: Lorem, ipsum dolor sit amet consectetur adipisicing elit. Iste ea, iusto eligendi earum amet incidunt vitae odit enim assumenda sit, nesciunt est nam ut neque? Hic, similique eaque? Deserunt, harum.</li>
-                        <li class="movie_age">연령 제한: 12세 이상 관람가</li>
+<div class="movie" th:if="${movie != null}">
+    <img th:if="${movie.poster != null and not #lists.isEmpty(movie.poster) and movie.poster[0].moviePoster != null}"
+         th:src="${movie.poster[0].moviePoster}"
+         alt="영화 포스터" class="movie_bg">
+    <div class="movie_explain">
+        <div class="book_mark">
+            <button>&#10084;</button>
+        </div>
+        <div class="explain">
+            <div class="title">
+                <ul>
+                    <li class="movie_title" th:text="${movie.movieTitle}"></li>
+                    <li class="movie_genre" th:text="${movie.genres != null and not #lists.isEmpty(movie.genres)} ? ${#strings.listJoin(movie.genres.![genreName], ', ')} : ''"></li>
+                    <li class="movie_director" th:text="${movie.directors != null and not #lists.isEmpty(movie.directors)} ? ${#strings.listJoin(movie.directors.![directorName], ', ')} : ''"></li>
+                    <li class="movie_actor" th:text="${movie.actors != null and not #lists.isEmpty(movie.actors)} ? ${#strings.listJoin(movie.actors.![actorName], ', ')} : ''"></li>
+                    <li class="movie_time" th:text="${movie.runTime != null} ? ${movie.runTime + '분'} : ''"></li>
+                    <li class="movie_year" th:text="${movie.openYear != null} ? ${movie.openYear + '년'} : ''"></li>
+                    <li class="movie_content" th:text="${movie.movieDescription}"></li>
+                    <li class="movie_age" th:text="${movie.movieRating}"></li>
+                </ul>
+            </div>
+            <div class="tab">
+                <div class="tab_menu">
+                    <ul class="tab-menu-ul">
+                        <li><a href="#still_cut_div">스틸컷</a></li>
+                        <li><a href="#review_div">리뷰</a></li>
+                        <li><a href="#preview_div">예고편</a></li>
                     </ul>
                 </div>
-                <!-- 탭 목차 영역 -->
-                <div class="tab">
-
-                    <div class="tab_menu">
-                        <ul class="tab-menu-ul">
-                            <li><a href="#still_cut_div">스틸컷</a></li>
-                            <li><a href="#review_div">리뷰</a></li>
-                            <li><a href="#preview_div">예고편</a></li>
-                        </ul>
+                <div class="tab-content">
+                    <div id="still_cut_div">
+                        <!-- 스틸컷 내용 (추가 필요) -->
                     </div>
-                    <!-- 탭 내용 영역 -->
-                    <div class="tab-content">
-                        <div id="still_cut_div">
-                            <!-- 스틸컷 -->
-                            <ul class="still_cut">
-                                <li><img src="../static/img/dune.jpg" alt=""></li>
-                                <li><img src="../static/img/half-life-3-pc-game-cover.jpg" alt=""></li>
-                                <li><img src="../static/img/harry.webp" alt=""></li>
-                            </ul>
+                    <div id="review_div">
+                        <ul th:if="${movie.reviews != null and not #lists.isEmpty(movie.reviews)}">
+                            <li th:each="review : ${movie.reviews}" class="review_ul">
+                                <div class="review_writer" th:text="${review.memberNickname}"></div>
+                                <div class="review_content" th:text="${review.reviewContent}"></div>
+                                <div class="review_time" th:text="${#temporals.format(review.reviewDate, 'yy-MM-dd')}"></div>
+                                <div class="review_star" th:text="${review.reviewRating + '/5'}"></div>
+                                <div class="review_actions" th:if="${#strings.equals(role, 'ADMIN') or #strings.equals(role, 'USER')}">
+                                    <button class="edit_review">수정</button>
+                                    <button class="delete_review">삭제</button>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="write_review" th:if="${#strings.equals(role, 'ADMIN') or #strings.equals(role, 'USER')}">
+                            <h2>리뷰 작성</h2>
+                            <form id="reviewForm">
+                                <textarea id="reviewContent" placeholder="리뷰를 작성해주세요"></textarea>
+                                <input type="number" id="reviewRating" placeholder="평점 (1~5)">
+                                <button type="submit">작성</button>
+                            </form>
                         </div>
-                        <div id="review_div">
-                            <!-- 리뷰 -->
-                            <ul class="review_ul my_review">
-                                <li class="review_writer">본인</li>
-                                <li class="review_content">여기는 자기 리뷰로 고정</li>
-                                <li class="review_time">24-06-18</li>
-                                <li class="review_star">4.5/5</li>
-                                <li class="review_delete"><i class="fa-solid fa-bars"></i></li>
-                            </ul>
-                            <ul class="review_ul">
-                                <li class="review_writer">jj</li>
-                                <li class="review_content">Best of all continuous movies. I love it.</li>
-                                <li class="review_time">24-06-18</li>
-                                <li class="review_star">4.5/5</li>
-                                <li class="review_delete"></li>
-
-                            </ul>
-                            <ul class="review_ul">
-                                <li class="review_writer">jmoda</li>
-                                <li class="review_content">I already tried that one, and didn't work that much.</li>
-                                <li class="review_time">24-06-18</li>
-                                <li class="review_star">5/5</li>
-                                <li class="review_delete"></li>
-
-                            </ul>
-                            <ul class="review_ul">
-                                <li class="review_writer">difs</li>
-                                <li class="review_content">The complete Middle-Earth Saga:</li>
-                                <li class="review_time">24-06-18</li>
-                                <li class="review_star">4/5</li>
-                                <li class="review_delete"></li>
-
-                            </ul>
-                            <ul class="review_ul">
-                                <li class="review_writer">jj</li>
-                                <li class="review_content">this movie is sick put that crazy ugly little guy creeps me out then i start laughing at its face</li>
-                                <li class="review_time">24-06-18</li>
-                                <li class="review_star">1/5</li>
-                                <li class="review_delete"></li>
-
-                            </ul>
-                            <!-- 리뷰 페이지 번호 창 -->
-                            <div class="review_no">
-                                <ul class="review_no_ul">
-                                    <li>&lt;</li>
-                                    <li>1</li>
-                                    <li>2</li>
-                                    <li>3</li>
-                                    <li>4</li>
-                                    <li>5</li>
-                                    <li>6</li>
-                                    <li>7</li>
-                                    <li>8</li>
-                                    <li>9</li>
-                                    <li>10</li>
-                                    <li>&gt;</li>
-                                </ul>
-                            </div>
-                        </div>    
-                        <div id="preview_div">   
-                            <iframe width="400" height="200" src="https://www.youtube.com/embed/_bo1XFtQbMs?si=lWfv8lVyn-OtKmty" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
-                        </div>
-
+                    </div>
+                    <div id="preview_div">
+                        <iframe th:if="${movie.trailer != null and not #lists.isEmpty(movie.trailer) and movie.trailer[0].trailerUrl != null}"
+                                width="400" height="200"
+                                th:src="${movie.trailer[0].trailerUrl}"
+                                title="YouTube video player"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                referrerpolicy="strict-origin-when-cross-origin"
+                                allowfullscreen>
+                        </iframe>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="bg">
-            <!-- 배경을 위한 빈 공간 -->
-        </div>
-        <!-- 영화 재생 버튼 -->
-        <div class="button">
-            <button class="watch_movie_btn">영화 보러 가기</button>
-
-        </div>
     </div>
-    <script src="/static/js/movie_page.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const token = localStorage.getItem('accessToken'); // Assuming the token is stored in localStorage
+    <div class="bg">
+        <!-- 배경을 위한 빈 공간 -->
+    </div>
+    <div class="button">
+        <button class="watch_movie_btn">영화 보러 가기</button>
+    </div>
+</div>
+<script src="/templates/movie_detail.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script th:inline="javascript">
+    document.addEventListener("DOMContentLoaded", function() {
+        const token = localStorage.getItem('accessToken');
 
-            if (token) {
-                axios.get('/auth/memberinfo', {
-                    headers: {
-                        'Authorization': 'Bearer ' + token
+        if (token) {
+            axios.get('/auth/memberinfo', {
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+            })
+                .then(response => {
+                    const role = response.data.memRole;
+                    if (role !== 'ADMIN' && role !== 'USER' ) {
+                        alert("권한이 없습니다.");
+                        window.location.href = '/main';
+                    } else {
+                        document.querySelector('.body').style.display = 'block';
+                        // 리뷰 탭 클릭 시 해당 위치로 스크롤
+                        document.querySelector('.tab-menu-ul li:nth-child(2) a').addEventListener('click', function() {
+                            document.querySelector('#review_div').scrollIntoView({
+                                behavior: 'smooth'
+                            });
+                        });
                     }
                 })
-                    .then(response => {
-                        const role = response.data.memRole;
-                        if (role !== 'ADMIN' && role !== 'USER' ) {
-                            alert("권한이 없습니다.");
-                            window.location.href = '/main';
+                .catch(error => {
+                    console.error('Error fetching user info:', error);
+                    alert("오류가 발생했습니다. 다시 로그인해주세요.");
+                    window.location.href = '/login';
+                });
+        } else {
+            alert("로그인이 필요합니다.");
+            window.location.href = '/login';
+        }
 
-                        } else {
-                            document.querySelector('.body').style.display = 'block';
-                        }
+        // 리뷰 작성 폼 제출 처리
+        const reviewForm = document.getElementById('reviewForm');
+        if (reviewForm) {
+            reviewForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const reviewContent = document.getElementById('reviewContent').value;
+                const reviewRating = document.getElementById('reviewRating').value;
+                axios.post('/details/movies/' + movie.id + '/reviews', {
+                    reviewContent: reviewContent,
+                    reviewRating: reviewRating
+                })
+                    .then(response => {
+                        // 성공적으로 리뷰가 작성되었을 때 처리
+                        console.log('리뷰 작성 성공:', response.data);
+                        // 페이지 리로드 또는 필요한 작업 수행
+                        window.location.reload();
                     })
                     .catch(error => {
-                        console.error('Error fetching user info:', error);
-                        alert("오류가 발생했습니다. 다시 로그인해주세요.");
-                        window.location.href = '/login';
+                        console.error('리뷰 작성 오류:', error);
+                        alert('리뷰 작성 중 오류가 발생했습니다.');
                     });
-            } else {
-                alert("로그인이 필요합니다.");
-                window.location.href = '/login';
-            }
-        });
-    </script>
+            });
+        }
+    });
+</script>
 </body>
 </html>
